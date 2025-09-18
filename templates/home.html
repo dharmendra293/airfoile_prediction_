@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airfoil Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f4f4f9;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Airfoil Prediction</h2>
+    <form id="airfoilForm">
+        <label>Frequency(hz):</label>
+        <input type="number" step="0.01" id="freq" required>
+
+        <label>Angle of Attack (degrees):</label>
+        <input type="number" step="0.01" id="aoa" required>
+
+        <label>Chord Length (m):</label>
+        <input type="number" step="0.01" id="chord" required>
+
+        <label>Free-stream Velocity (m/s):</label>
+        <input type="number" step="0.01" id="velocity" required>
+
+        <label>suction side displacement Thickness (m):</label>
+        <input type="number" step="0.01" id="thickness" required>
+
+        <button type="button" onclick="predictAirfoil()">Predict</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+    function predictAirfoil() {
+        let freq = document.getElementById("freq").value;
+        let aoa = document.getElementById("aoa").value;
+        let chord = document.getElementById("chord").value;
+        let velocity = document.getElementById("velocity").value;
+        let thickness = document.getElementById("thickness").value;
+
+        // API ko data bhejna
+        fetch("http://127.0.0.1:5000/predict_api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                data: {
+                    "Frequency": parseFloat(freq),
+                    "Angle of attack": parseFloat(aoa),
+                    "Chord length": parseFloat(chord),
+                    "Free-stream velocity": parseFloat(velocity),
+                    "Suction side displacement thickness": parseFloat(thickness)
+                }
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            document.getElementById("result").innerHTML =
+                "Predicted Output: <b>" + result.prediction + "</b>";
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("result").innerHTML = "Error in prediction!";
+        });
+    }
+</script>
+
+
+</body>
+</html>
