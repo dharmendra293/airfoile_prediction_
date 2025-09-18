@@ -75,7 +75,7 @@
         let thickness = document.getElementById("thickness").value;
 
         // API ko data bhejna
-        fetch("http://127.0.0.1:5000/predict_api", {
+        fetch("/predict_api", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -105,3 +105,4 @@
 
 </body>
 </html>
+
